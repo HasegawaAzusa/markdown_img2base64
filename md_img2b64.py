@@ -22,14 +22,14 @@ def run(file: str):
         # Match markdown image tag
         if re.fullmatch(RE_MARKDOWN_IAMGE, line):
             # Get path of the image tag
-            path = line[line.index('(')+1:-1]
+            path = line[line.rindex('(')+1:-1]
             # Get the real path
             if os.path.exists(path):
                 real_path = path
             elif os.path.exists(os.path.join(dirpath, path)):
                 real_path = os.path.join(dirpath, path)
             else:
-                click.echo(f'[x] Could not parse: {line}', color='red')
+                click.echo(click.style(f'[-] Could not parse: {line}', fg='red'))
             real_path = os.path.normcase(real_path)
             # Turn image to base64 code
             with open(real_path, 'rb') as imgfile:
@@ -42,6 +42,7 @@ def run(file: str):
     # Output markdown file
     with open(output_filepath, 'w') as ofile:
         ofile.write('\n'.join(lines))
+    click.echo(click.style(f'[+] Output file: {output_filepath}', fg='green'))
 
 if __name__ == '__main__':
     run()
